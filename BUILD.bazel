@@ -10,7 +10,7 @@ load("@rabbitmq-server//:rabbitmqctl.bzl", "rabbitmqctl")
 load("@bazel-erlang//:ct.bzl", "ct_suite")
 
 APP_ENV = """[
-	    {exchange, <<"metronome">>}
+	    {exchange, <<"tracingui">>}
 	  ]"""
 
 DEPS = [
@@ -23,10 +23,10 @@ RUNTIME_DEPS = [
 ]
 
 rabbitmq_lib(
-    app_description = "Embedded Rabbit Metronome",
+    app_description = "Embedded Rabbit tracingui",
     app_env = APP_ENV,
-    app_module = "rabbit_metronome",
-    app_name = "rabbitmq_metronome",
+    app_module = "rabbit_tracingui",
+    app_name = "rabbitmq_tracingui",
     runtime_deps = RUNTIME_DEPS,
     deps = DEPS,
 )
@@ -56,7 +56,7 @@ rabbitmqctl(
 )
 
 ct_suite(
-    name = "metronome_SUITE",
+    name = "tracingui_SUITE",
     data = [
         "@rabbitmq_ct_helpers//tools/tls-certs:Makefile",
         "@rabbitmq_ct_helpers//tools/tls-certs:openssl.cnf.in",

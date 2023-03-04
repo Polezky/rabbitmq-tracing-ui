@@ -5,14 +5,14 @@
 %% Copyright (c) 2007-2020 VMware, Inc. or its affiliates.  All rights reserved.
 %%
 
--module(rabbit_metronome).
+-module(rabbit_tracingui).
 
 -behaviour(application).
 
 -export([start/2, stop/1]).
 
 start(normal, []) ->
-    rabbit_metronome_sup:start_link().
+    rabbit_tracingui_sup:start_link().
 
 stop(_State) ->
     ok.

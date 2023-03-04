@@ -5,7 +5,7 @@
 %% Copyright (c) 2007-2020 VMware, Inc. or its affiliates.  All rights reserved.
 %%
 
--module(rabbit_metronome_sup).
+-module(rabbit_tracingui_sup).
 
 -behaviour(supervisor).
 
@@ -16,10 +16,10 @@ start_link() ->
 
 init([]) ->
     {ok, {{one_for_one, 3, 10},
-          [{rabbit_metronome_worker,
-            {rabbit_metronome_worker, start_link, []},
+          [{rabbit_tracingui_worker,
+            {rabbit_tracingui_worker, start_link, []},
             permanent,
             10000,
             worker,
-            [rabbit_metronome_worker]}
+            [rabbit_tracingui_worker]}
           ]}}.

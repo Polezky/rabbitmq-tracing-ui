@@ -5,7 +5,7 @@
 %% Copyright (c) 2007-2020 VMware, Inc. or its affiliates.  All rights reserved.
 %%
 
--module(rabbit_metronome_worker).
+-module(rabbit_tracingui_worker).
 -behaviour(gen_server).
 
 -export([start_link/0]).
@@ -80,7 +80,7 @@ code_change(_OldVsn, State, _Extra) ->
 open_connection(State) ->
     {ok, Connection} = amqp_connection:start(#amqp_params_direct{}),
     {ok, Channel} = amqp_connection:open_channel(Connection),
-    {ok, Exchange} = application:get_env(rabbitmq_metronome, exchange),
+    {ok, Exchange} = application:get_env(rabbitmq_tracingui, exchange),
     amqp_channel:call(Channel, #'exchange.declare'{exchange = Exchange,
                                                    type = <<"topic">>}),
     State#state{channel = Channel, exchange = Exchange}.

@@ -1,10 +1,10 @@
-PROJECT = rabbitmq_tracingui
-PROJECT_DESCRIPTION = Embedded Rabbit tracingui
-PROJECT_MOD = rabbit_tracingui
+PROJECT = rabbitmq_tracing_ui
+PROJECT_DESCRIPTION = Tracing UI
+PROJECT_MOD = rabbit_tracing_ui
 
 define PROJECT_ENV
 [
-	    {exchange, <<"tracingui">>}
+	    {exchange, <<"tracing_ui">>}
 	  ]
 endef
 

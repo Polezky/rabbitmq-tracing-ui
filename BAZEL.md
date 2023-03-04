@@ -16,7 +16,7 @@ Adjusting the paths as needed. On macOS, you will also want to add `build --spaw
 
 You can then run the test suite with `bazel test //...`
 
-## Start the broker with the tracingui plugin
+## Start the broker with the Tracing UI plugin
 
 `bazel run broker`
 

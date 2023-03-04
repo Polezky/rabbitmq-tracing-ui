@@ -5,7 +5,7 @@
 %% Copyright (c) 2007-2020 VMware, Inc. or its affiliates.  All rights reserved.
 %%
 
--module(tracingui_SUITE).
+-module(tracing_ui_SUITE).
 
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("common_test/include/ct.hrl").
@@ -65,7 +65,7 @@ receive_tick(Config) ->
     timer:sleep(3000),
     #'queue.bind_ok'{}
         = amqp_channel:call(Channel, #'queue.bind'{queue = Q,
-                                                   exchange = <<"tracingui">>,
+                                                   exchange = <<"tracing_ui">>,
                                                    routing_key = <<"#">>}),
     timer:sleep(2000),
     {#'basic.get_ok'{}, #amqp_msg{}} = amqp_channel:call(Channel, #'basic.get'{queue = Q, no_ack = true}).

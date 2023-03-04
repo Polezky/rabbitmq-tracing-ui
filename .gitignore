@@ -14,7 +14,7 @@
 /sbin/
 /sbin.lock
 
-/rabbitmq_tracingui.d
+/rabbitmq_tracing_ui.d
 
 /.bazelrc
 /bazel-*

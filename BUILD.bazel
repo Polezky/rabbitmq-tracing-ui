@@ -1,84 +1,74 @@
+load("@rules_erlang//:xref2.bzl", "xref")
+load("@rules_erlang//:dialyze.bzl", "dialyze", "plt")
 load(
-    "@rabbitmq-server//:rabbitmq.bzl",
-    "RABBITMQ_ERLC_OPTS",
-    "RABBITMQ_TEST_ERLC_OPTS",
-    "rabbitmq_lib",
+    "//:rabbitmq.bzl",
+    "BROKER_VERSION_REQUIREMENTS_ANY",
+    "RABBITMQ_DIALYZER_OPTS",
+    "assert_suites",
+    "broker_for_integration_suites",
+    "rabbitmq_app",
+    "rabbitmq_integration_suite",
 )
-load("@rabbitmq-server//:rabbitmq_home.bzl", "rabbitmq_home")
-load("@rabbitmq-server//:rabbitmq_run.bzl", "rabbitmq_run", "rabbitmq_run_command")
-load("@rabbitmq-server//:rabbitmqctl.bzl", "rabbitmqctl")
-load("@bazel-erlang//:ct.bzl", "ct_suite")
+
+APP_NAME = "rabbitmq_tracing_ui"
+
+APP_DESCRIPTION = "RabbitMQ message logging / tracing"
+
+APP_MODULE = "rabbit_tracing_ui_app"
 
 APP_ENV = """[
-	    {exchange, <<"tracing_ui">>}
+	    {directory, "/var/tmp/rabbitmq-tracing"},
+	    {username, <<"guest">>},
+	    {password, <<"guest">>}
 	  ]"""
 
+BUILD_DEPS = [
+    "//deps/rabbitmq_management_agent:erlang_app",
+]
+
 DEPS = [
-    "@rabbitmq-server//deps/rabbit_common:bazel_erlang_lib",
-    "@rabbitmq-server//deps/amqp_client:bazel_erlang_lib",
+    "//deps/rabbit_common:erlang_app",
+    "//deps/rabbitmq_management:erlang_app",
 ]
 
 RUNTIME_DEPS = [
-    "@rabbitmq-server//deps/rabbit:bazel_erlang_lib",
+    "//deps/rabbit:erlang_app",
 ]
 
-rabbitmq_lib(
-    app_description = "Tracing UI",
+rabbitmq_app(
+    app_description = APP_DESCRIPTION,
     app_env = APP_ENV,
-    app_module = "rabbit_tracing_ui",
-    app_name = "rabbitmq_tracing_ui",
+    app_extra_keys = BROKER_VERSION_REQUIREMENTS_ANY,
+    app_module = APP_MODULE,
+    app_name = APP_NAME,
+    build_deps = BUILD_DEPS,
     runtime_deps = RUNTIME_DEPS,
     deps = DEPS,
 )
 
-rabbitmq_home(
-    name = "broker-home",
-    plugins = [
-        "@rabbitmq-server//deps/rabbit:bazel_erlang_lib",
-        ":bazel_erlang_lib",
-    ],
+xref()
+
+plt(
+    name = "base_plt",
+    plt = "//:base_plt",
+    deps = BUILD_DEPS + DEPS,
 )
 
-rabbitmq_run(
-    name = "rabbitmq-run",
-    home = ":broker-home",
+dialyze(
+    dialyzer_opts = RABBITMQ_DIALYZER_OPTS,
+    plt = ":base_plt",
 )
 
-rabbitmq_run_command(
-    name = "broker",
-    rabbitmq_run = ":rabbitmq-run",
-    subcommand = "run-broker",
+broker_for_integration_suites()
+
+rabbitmq_integration_suite(
+    name = "rabbit_tracing_ui_SUITE",
 )
 
-rabbitmqctl(
-    name = "rabbitmqctl",
-    home = ":broker-home",
-)
+assert_suites()
 
-ct_suite(
-    name = "tracing_ui_SUITE",
-    data = [
-        "@rabbitmq_ct_helpers//tools/tls-certs:Makefile",
-        "@rabbitmq_ct_helpers//tools/tls-certs:openssl.cnf.in",
-    ],
-    erlc_opts = RABBITMQ_TEST_ERLC_OPTS,
-    test_env = {
-        "RABBITMQ_CT_SKIP_AS_ERROR": "true",
-        "RABBITMQ_RUN": "$TEST_SRCDIR/$TEST_WORKSPACE/rabbitmq-run",
-        "RABBITMQCTL": "$TEST_SRCDIR/$TEST_WORKSPACE/broker-home/sbin/rabbitmqctl",
-        "RABBITMQ_PLUGINS": "$TEST_SRCDIR/$TEST_WORKSPACE/broker-home/sbin/rabbitmq-plugins",
-    },
-    tools = [
-        ":rabbitmq-run",
-    ],
-    runtime_deps = [
-        "@rabbitmq-server//deps/rabbitmq_cli:elixir_as_bazel_erlang_lib",
-        "@rabbitmq-server//deps/rabbitmq_cli:rabbitmqctl",
-        "@rabbitmq_ct_client_helpers//:bazel_erlang_lib",
-        "@rabbitmq_ct_helpers//:bazel_erlang_lib",
-    ],
-    deps = [
-        "@rabbitmq-server//deps/amqp_client:bazel_erlang_lib",
-        "@rabbitmq-server//deps/rabbit_common:bazel_erlang_lib",
-    ],
+alias(
+    name = "rabbitmq_tracing_ui",
+    actual = ":erlang_app",
+    visibility = ["//visibility:public"],
 )

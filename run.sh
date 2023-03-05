@@ -6,7 +6,7 @@ rabbitmqPluginPath="/lib/rabbitmq/lib/rabbitmq_server-3.11.9/plugins/$pluginName
 
 function run() {
   if [[ "$1" == "p" ]]; then
-    rebuildPlugin
+    rebuildPlugin "$2"
   elif [[ "$1" == "f" ]]; then
     rebuildFrontend "$2"
   else
@@ -39,20 +39,20 @@ function updateTracingUiHtml() {
 }
 
 function rebuildPlugin() {
-  rm -rf ebin
+  echo "$1" | sudo -S rm -rf ebin
 
-  make dist
+  echo "$1" | sudo -S make dist
 
   distPluginPath=$(find plugins -name "*$pluginName*" -type d)
 
-  rm -rf "$rabbitmqPluginPath"
-  cp -r "$distPluginPath" "$rabbitmqPluginPath"
+  echo "$1" | sudo -S rm -rf "$rabbitmqPluginPath"
+  echo "$1" | sudo -S cp -r "$distPluginPath" "$rabbitmqPluginPath"
 
-  rabbitmq-plugins disable "$pluginName"
-  rabbitmq-plugins enable "$pluginName"
+  echo "$1" | sudo -S rabbitmq-plugins disable "$pluginName"
+  echo "$1" | sudo -S rabbitmq-plugins enable "$pluginName"
 
-  systemctl stop rabbitmq-server
-  systemctl start rabbitmq-server
+  echo "$1" | sudo -S systemctl stop rabbitmq-server
+  echo "$1" | sudo -S systemctl start rabbitmq-server
 }
 
 run "$@"

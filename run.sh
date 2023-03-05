@@ -7,14 +7,17 @@ rabbitmqPluginPath="/lib/rabbitmq/lib/rabbitmq_server-3.11.9/plugins/$pluginName
 function run() {
   action=$1
   password=$2
-  if [[ "$action" == "p" ]]; then
-    rebuildPlugin "$password"
-  elif [[ "$action" == "f" ]]; then
+
+  if [[ $action == *"f"* ]]; then
     rebuildFrontend "$password"
-  elif [[ "$action" == "z" ]]; then
+  fi
+
+  if [[ $action == *"p"* ]]; then
+    rebuildPlugin "$password"
+  fi
+
+  if [[ $action == *"z"* ]]; then
     zipPlugin
-  else
-    echo "wrong argument"
   fi
 }
 
@@ -26,7 +29,8 @@ function rebuildFrontend() {
     updateTracingUiHtml &&
     cp -r ./build/_app/immutable ../priv/www/js/ui &&
     echo "$password" | sudo -S rm -rf "$rabbitmqPluginPath/priv" &&
-    echo "$password" | sudo -S cp -r ../priv "$rabbitmqPluginPath/priv"
+    echo "$password" | sudo -S cp -r ../priv "$rabbitmqPluginPath/priv" &&
+    cd ..
 }
 
 function updateTracingUiHtml() {
@@ -44,7 +48,6 @@ function updateTracingUiHtml() {
 }
 
 function zipPlugin() {
-  rm -r dist/*
   pluginPath=$(find plugins -name "*$pluginName*" -type d)
   zip -r dist/$pluginName.zip "$pluginPath"
 }

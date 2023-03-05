@@ -1,22 +1,14 @@
-<div id="tracing-ui"></div>
-<script type="module">
-  {
-    var kitKey = '1gafc1r';
-    var startKey = 'd774c2c5';
-    var appKey = '15affb99';
-    var kitVar = `__sveltekit_${kitKey}`;
+<div id="tracing-ui"><script type="module">				
+					window.__sveltekit_1al0jst = {
+						env: {},
+						assets: "",
+						element: document.getElementById("tracing-ui")
+					};
 
-    window[kitVar] = {
-      env: {},
-      assets: '',
-      element: document.getElementById('tracing-ui'),
-    };
-
-    Promise.all([
-      import(`/js/ui/entry/start.${startKey}.js`),
-      import(`/js/ui/entry/app.${appKey}.js`)
-    ]).then(([kit, app]) => {
-      kit.start(app, window[kitVar].element);
-    });
-  }
-</script>
+					Promise.all([
+						import("/js/ui/entry/start.c928df4c.js"),
+						import("/js/ui/entry/app.35cd1f23.js")
+					]).then(([kit, app]) => {
+						kit.start(app, __sveltekit_1al0jst.element);
+					});
+				</script></div>

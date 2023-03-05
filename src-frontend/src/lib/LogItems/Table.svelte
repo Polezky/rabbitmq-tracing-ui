@@ -77,7 +77,7 @@
 
 		th {
 			position: sticky;
-			top: -1px;
+			top: 115px;
 			background: white;
 			border-top: 1px solid rgb(204, 204, 204);
 		}

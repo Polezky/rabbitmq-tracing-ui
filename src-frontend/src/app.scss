@@ -1,0 +1,21 @@
+.d-flex {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.align-items-center {
+	align-items: center;
+}
+
+.tracing-ui-root {
+	$btnSecondaryColor: rgb(204, 204, 204);
+
+	.btn-secondary {
+		color: black !important;
+		background: $btnSecondaryColor;
+
+		&:hover {
+			background: #f60;
+		}
+	}
+}

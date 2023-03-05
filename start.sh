@@ -1,15 +1,19 @@
 #!/bin/bash
 set -e
 
-rm -rf /home/polezky/rabbitmq/deps/rabbitmq_tracing_ui/ebin
+rm -rf ebin
 
 make dist
 
-rm -rf /lib/rabbitmq/lib/rabbitmq_server-3.11.9/plugins/rabbitmq_tracing_ui
-cp -r /home/polezky/rabbitmq/deps/rabbitmq_tracing_ui/plugins/rabbitmq_tracing_ui-3.11.0+rc.2.444.g6bbaadd /lib/rabbitmq/lib/rabbitmq_server-3.11.9/plugins/rabbitmq_tracing_ui
+pluginName=rabbitmq_tracing_ui
+rabbitmqPluginPath="/lib/rabbitmq/lib/rabbitmq_server-3.11.9/plugins/$pluginName"
+distPluginPath=$(find plugins -name "*$pluginName*" -type d)
 
-rabbitmq-plugins disable rabbitmq_tracing_ui
-rabbitmq-plugins enable rabbitmq_tracing_ui
+rm -rf "$rabbitmqPluginPath"
+cp -r "$distPluginPath" "$rabbitmqPluginPath"
+
+rabbitmq-plugins disable "$pluginName"
+rabbitmq-plugins enable "$pluginName"
 
 systemctl stop rabbitmq-server
 systemctl start rabbitmq-server

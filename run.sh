@@ -5,23 +5,28 @@ pluginName=rabbitmq_tracing_ui
 rabbitmqPluginPath="/lib/rabbitmq/lib/rabbitmq_server-3.11.9/plugins/$pluginName"
 
 function run() {
-  if [[ "$1" == "p" ]]; then
-    rebuildPlugin "$2"
-  elif [[ "$1" == "f" ]]; then
-    rebuildFrontend "$2"
+  action=$1
+  password=$2
+  if [[ "$action" == "p" ]]; then
+    rebuildPlugin "$password"
+  elif [[ "$action" == "f" ]]; then
+    rebuildFrontend "$password"
+  elif [[ "$action" == "z" ]]; then
+    zipPlugin
   else
     echo "wrong argument"
   fi
 }
 
 function rebuildFrontend() {
+  password=$1
   rm -rf ./priv/www/js/ui
   cd ./src-frontend
   npm run build &&
     updateTracingUiHtml &&
     cp -r ./build/_app/immutable ../priv/www/js/ui &&
-    echo "$1" | sudo -S rm -rf "$rabbitmqPluginPath/priv" &&
-    echo "$1" | sudo -S cp -r ../priv "$rabbitmqPluginPath/priv"
+    echo "$password" | sudo -S rm -rf "$rabbitmqPluginPath/priv" &&
+    echo "$password" | sudo -S cp -r ../priv "$rabbitmqPluginPath/priv"
 }
 
 function updateTracingUiHtml() {
@@ -38,21 +43,28 @@ function updateTracingUiHtml() {
   echo "$html" >"../priv/www/js/tmpl/tracing-ui.ejs"
 }
 
+function zipPlugin() {
+  rm -r dist/*
+  pluginPath=$(find plugins -name "*$pluginName*" -type d)
+  zip -r dist/$pluginName.zip "$pluginPath"
+}
+
 function rebuildPlugin() {
-  echo "$1" | sudo -S rm -rf ebin
+  password=$1
+  echo "$password" | sudo -S rm -rf ebin
 
-  echo "$1" | sudo -S make dist
+  echo "$password" | sudo -S make dist
 
-  distPluginPath=$(find plugins -name "*$pluginName*" -type d)
+  pluginPath=$(find plugins -name "*$pluginName*" -type d)
 
-  echo "$1" | sudo -S rm -rf "$rabbitmqPluginPath"
-  echo "$1" | sudo -S cp -r "$distPluginPath" "$rabbitmqPluginPath"
+  echo "$password" | sudo -S rm -rf "$rabbitmqPluginPath"
+  echo "$password" | sudo -S cp -r "$pluginPath" "$rabbitmqPluginPath"
 
-  echo "$1" | sudo -S rabbitmq-plugins disable "$pluginName"
-  echo "$1" | sudo -S rabbitmq-plugins enable "$pluginName"
+  echo "$password" | sudo -S rabbitmq-plugins disable "$pluginName"
+  echo "$password" | sudo -S rabbitmq-plugins enable "$pluginName"
 
-  echo "$1" | sudo -S systemctl stop rabbitmq-server
-  echo "$1" | sudo -S systemctl start rabbitmq-server
+  echo "$password" | sudo -S systemctl stop rabbitmq-server
+  echo "$password" | sudo -S systemctl start rabbitmq-server
 }
 
 run "$@"

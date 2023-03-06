@@ -56,8 +56,11 @@ function updateTracingUiHtml() {
 }
 
 function zipPlugin() {
-  pluginPath=$(find plugins -name "*$pluginName*" -type d)
-  zip -r "$currentScriptPath/dist/$pluginName.zip" "$pluginPath"
+  currentPath=$(pwd)
+  pluginPath=$(find "$currentScriptPath/plugins" -name "*$pluginName*" -type d)
+  cd "$pluginPath" &&
+    zip -r - . >"$currentScriptPath/dist/$pluginName.zip" &&
+    cd "$currentPath"
 }
 
 function rebuildPlugin() {

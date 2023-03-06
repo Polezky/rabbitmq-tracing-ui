@@ -7,7 +7,7 @@ export const logFilterFieldConfigs: Readonly<ILogFilterFieldConfig>[] = [
     type: LogFilterFieldType.DateTime,
     displayName: 'Date & Time',
     logItemKey: 'timestamp',
-    getDisplayValue: (logItem: LogItem) => logItem.timestamp.toISOString(),
+    getDisplayValue: (logItem: LogItem) => getFormattedDateTime(logItem.timestamp),
   }),
   Object.freeze({ type: LogFilterFieldType.Number, displayName: 'Channel', logItemKey: 'channel' }),
   Object.freeze({ type: LogFilterFieldType.Text, displayName: 'Connection', logItemKey: 'connection' }),
@@ -22,3 +22,10 @@ export const logFilterFieldConfigs: Readonly<ILogFilterFieldConfig>[] = [
   Object.freeze({ type: LogFilterFieldType.Text, displayName: 'Vhost', logItemKey: 'vhost' }),
   Object.freeze({ type: LogFilterFieldType.Number, displayName: 'Delivery Mode', logItemKey: 'delivery_mode' }),
 ];
+
+
+function getFormattedDateTime(date: Date): string {
+  const dateStr = date.toLocaleDateString();
+  const timeStr = date.toLocaleTimeString();
+  return `${dateStr} ${timeStr}`;
+}

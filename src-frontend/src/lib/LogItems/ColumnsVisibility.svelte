@@ -28,6 +28,7 @@
 <style lang="scss">
 	.container {
 		display: inline-flex;
+		flex-wrap: wrap;
 		align-items: center;
 		border: 1px solid gray;
 		margin: 10px 0;

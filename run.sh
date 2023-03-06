@@ -3,38 +3,46 @@ set -e
 
 pluginName=rabbitmq_tracing_ui
 rabbitmqPluginPath="/lib/rabbitmq/lib/rabbitmq_server-3.11.9/plugins/$pluginName"
+currentScriptPath=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 function run() {
   action=$1
   password=$2
 
-  if [[ $action == *"f"* ]]; then
-    rebuildFrontend "$password"
+  if [[ $action == "copy-f" ]]; then
+    copyFrontend "$password"
+    return
   fi
 
-  if [[ $action == *"p"* ]]; then
+  if [[ $action == *"front"* ]]; then
+    buildFrontend "$password"
+  fi
+
+  if [[ $action == *"plugin"* ]]; then
     rebuildPlugin "$password"
   fi
 
-  if [[ $action == *"z"* ]]; then
+  if [[ $action == *"zip"* ]]; then
     zipPlugin
   fi
 }
 
-function rebuildFrontend() {
+function buildFrontend() {
   password=$1
-  rm -rf ./priv/www/js/ui
-  cd ./src-frontend
-  npm run build &&
-    updateTracingUiHtml &&
-    cp -r ./build/_app/immutable ../priv/www/js/ui &&
+  npm run --prefix "$currentScriptPath/src-frontend" build
+}
+
+function copyFrontend() {
+  password=$1
+  updateTracingUiHtml &&
+    rm -rf "$currentScriptPath/priv/www/js/ui" &&
+    cp -r "$currentScriptPath/src-frontend/build/_app/immutable" "$currentScriptPath/priv/www/js/ui" &&
     echo "$password" | sudo -S rm -rf "$rabbitmqPluginPath/priv" &&
-    echo "$password" | sudo -S cp -r ../priv "$rabbitmqPluginPath/priv" &&
-    cd ..
+    echo "$password" | sudo -S cp -r "$currentScriptPath/priv" "$rabbitmqPluginPath/priv"
 }
 
 function updateTracingUiHtml() {
-  script=$(sed -n '/<script>/,/<\/script>/{ /script>/d; p }' ./build/index.html)
+  script=$(sed -n '/<script>/,/<\/script>/{ /script>/d; p }' "$currentScriptPath/src-frontend/build/index.html")
   script=${script/'{'/''}
   script=${script/'__sveltekit_'/'window.__sveltekit_'}
   script=${script/'document.currentScript.parentElement'/'document.getElementById("tracing-ui")'}
@@ -44,7 +52,7 @@ function updateTracingUiHtml() {
   source="_app/immutable"
   target="js/ui"
   html=${html//$source/$target}
-  echo "$html" >"../priv/www/js/tmpl/tracing-ui.ejs"
+  echo "$html" >"$currentScriptPath/priv/www/js/tmpl/tracing-ui.ejs"
 }
 
 function zipPlugin() {
@@ -71,5 +79,3 @@ function rebuildPlugin() {
 }
 
 run "$@"
-
-# rabbitmq-diagnostics status

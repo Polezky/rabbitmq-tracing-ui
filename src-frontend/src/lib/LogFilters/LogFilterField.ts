@@ -57,23 +57,21 @@ export class LogFilterField {
   }
 
   get targetDate(): string {
-    return (this.targetValue as Date)
-      .toISOString()
-      .split('T')[0];
+    const date = this.targetValue as Date;
+    const offset = date.getTimezoneOffset();
+    const utcDate = new Date(date.getTime() - (offset * 60 * 1000));
+    return utcDate.toISOString().split('T')[0];
   }
 
   set targetDate(dateTime: string) {
-    const targetValue = this.targetValue as Date;
-    const date = startOfDay(new Date(dateTime));
-    date.setHours(targetValue.getHours(), targetValue.getMinutes(), 0, 0);
-    this.targetValue = date;
+    this.targetValue = new Date(dateTime);
   }
 
   get targetTime(): string {
-    return (this.targetValue as Date)
-      .toISOString()
-      .split('T')[1]
-      .split('.')[0];
+    const date = this.targetValue as Date;
+    const offset = date.getTimezoneOffset();
+    const utcDate = new Date(date.getTime() - (offset * 60 * 1000));
+    return utcDate.toISOString().split('T')[1].split('.')[0];
   }
 
   set targetTime(value: string) {

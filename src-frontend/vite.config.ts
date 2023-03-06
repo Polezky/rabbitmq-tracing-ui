@@ -1,6 +1,20 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, type PluginOption } from 'vite';
+import { exec } from 'node:child_process';
+
+const postBuildCommandsPlugin: PluginOption = {
+  name: 'postbuild-commands',
+  closeBundle: () => {
+    exec('../run.sh copy-f 1', (_, output, err) => {
+      if (output) console.log(output);
+      if (err) console.log(err);
+    });
+  }
+};
 
 export default defineConfig({
-	plugins: [sveltekit()]
+  plugins: [
+    sveltekit(),
+    postBuildCommandsPlugin,
+  ]
 });

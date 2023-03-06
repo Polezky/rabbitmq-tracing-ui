@@ -73,20 +73,20 @@
 				</option>
 			{/each}
 		</select>
-		<button disabled={!file} type="button" on:click={loadLogs}> Load Logs </button>
+		<button disabled={!file} type="button" on:click={loadLogs}> Load File </button>
 
 		{#if hasAllLogItems}
 			<button
 				type="button"
 				on:click={() => (isFilterEditMode = !isFilterEditMode)}
 				class="btn-secondary">
-				{isFilterEditMode ? 'Complete' : ''} Edit Filter
+				{isFilterEditMode ? 'Hide' : 'Show'} Filter
 			</button>
 		{/if}
 
 		{#if hasAllLogItems}
 			<button type="button" on:click={toggleColumnEditMode} class="btn-secondary">
-				{isColumnEditMode ? 'Complete' : ''} Edit Columns
+				{isColumnEditMode ? 'Hide' : 'Show'} Columns Config
 			</button>
 		{/if}
 	</div>

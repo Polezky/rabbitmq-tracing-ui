@@ -5,7 +5,7 @@ import { exec } from 'node:child_process';
 const postBuildCommandsPlugin: PluginOption = {
   name: 'postbuild-commands',
   closeBundle: () => {
-    exec('../run.sh copy-f 1', (_, output, err) => {
+    exec('../run.sh copy-front 1', (_, output, err) => {
       if (output) console.log(output);
       if (err) console.log(err);
     });

@@ -15,12 +15,13 @@
 	const baseTraceFilesUrl = 'api/trace-files';
 
 	let files: IFileInfo[] = [];
-	let file: IFileInfo;
+	let file: IFileInfo | undefined;
 	let allLogItems: LogItem[] = [];
 	let logItems: LogItem[] = [];
 	let isFilterApplied = false;
 	let isFilterEditMode = false;
 	let isColumnEditMode = false;
+	let errorMessage = '';
 
 	$: hasAllLogItems = allLogItems.length > 0;
 
@@ -33,10 +34,20 @@
 	});
 
 	async function loadLogs(): Promise<void> {
-		const url = `${baseTraceFilesUrl}/${encodeURIComponent(file.name)}`;
+		allLogItems = [];
+		errorMessage = '';
+		const url = `${baseTraceFilesUrl}/${encodeURIComponent(file!.name)}`;
 		const response = await fetch(url);
 		const lines = await response.text();
-		allLogItems = lines.split('\n').filter(Boolean).map(LogItem.fromJson);
+		try {
+			allLogItems = lines.split('\n').filter(Boolean).map(LogItem.fromJson);
+		} catch (error) {
+			file = undefined;
+			isFilterEditMode = false;
+			isColumnEditMode = false;
+			errorMessage =
+				'Failed to parse JSON in log file. It could be a text log file. Pick a JSON log file.';
+		}
 		resetFilter();
 	}
 
@@ -63,8 +74,6 @@
 
 <div class="tracing-ui-root">
 	<div class="controls">
-		<button type="button" on:click={loadLogFileLists} class="btn-secondary">
-			Update Files List</button>
 		<label for="fileName">File:</label>
 		<select bind:value={file} id="fileName">
 			{#each files as file}
@@ -90,6 +99,9 @@
 			</button>
 		{/if}
 	</div>
+	{#if errorMessage.length}
+		<div class="error">{errorMessage}</div>
+	{/if}
 	{#if isFilterEditMode}
 		<div>
 			<LogFilterComponent
@@ -116,5 +128,11 @@
 		display: flex;
 		align-items: center;
 		gap: 5px;
+	}
+
+	.error {
+		font-weight: bold;
+		color: red;
+		margin: 10px 0;
 	}
 </style>

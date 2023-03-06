@@ -59,12 +59,14 @@ export class LogFilterField {
   get targetDate(): string {
     const date = this.targetValue as Date;
     const offset = date.getTimezoneOffset();
-    const utcDate = new Date(date.getTime() - (offset * 60 * 1000));
-    return utcDate.toISOString().split('T')[0];
+    const localDateAsUtc = new Date(date.getTime() - (offset * 60 * 1000));
+    return localDateAsUtc.toISOString().split('T')[0];
   }
 
   set targetDate(dateTime: string) {
+    const time = this.targetTime;
     this.targetValue = new Date(dateTime);
+    this.targetTime = time;
   }
 
   get targetTime(): string {
@@ -79,11 +81,11 @@ export class LogFilterField {
     (this.targetValue as Date).setHours(hours, minutes, 0, 0);
   }
 
-  configure(config: ILogFilterFieldConfig, targetValue?: string) {
+  configure(config: ILogFilterFieldConfig, targetValue?: string, operator?: LogFilterOperator) {
     this.config = config;
     this.operatorsMap = fieldTypeOperations.get(this.config.type)!;
     this.operators = Array.from(this.operatorsMap.keys());
-    this.operator = this.operators[0];
+    this.operator = operator || this.operators[0];
 
     if (this.config.type === LogFilterFieldType.DateTime) {
       this.targetValue = targetValue ? new Date(targetValue) : new Date();
@@ -107,7 +109,7 @@ export class LogFilterField {
     return objects.map(object => {
       const field = new LogFilterField(object.id);
       const config = logFilterFieldConfigs.find(c => c.logItemKey === object.config.logItemKey);
-      field.configure(config!, object.targetValue as string);
+      field.configure(config!, object.targetValue as string, object.operator);
       return field;
     });
   }

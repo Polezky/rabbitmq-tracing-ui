@@ -9,7 +9,7 @@ function run() {
   action=$1
   password=$2
 
-  if [[ $action == "copy-f" ]]; then
+  if [[ $action == "copy-front" ]]; then
     copyFrontend "$password"
     return
   fi
@@ -57,7 +57,7 @@ function updateTracingUiHtml() {
 
 function zipPlugin() {
   pluginPath=$(find plugins -name "*$pluginName*" -type d)
-  zip -r dist/$pluginName.zip "$pluginPath"
+  zip -r "$currentScriptPath/dist/$pluginName.zip" "$pluginPath"
 }
 
 function rebuildPlugin() {

@@ -1,10 +1,10 @@
-RabbitMQ plugin to view and filter traces
+# RabbitMQ plugin to view and filter traces
 
-# Installation
+## Installation
 
 - Download plugin zip [from here](https://github.com/Polezky/rabbitmq-tracing-ui/raw/master/dist/rabbitmq_tracing_ui.zip)
 
-## Windows installation
+### Windows installation
 
 - stop RabbitMQ. E.g. in cmd with administrator privileges run:
 
@@ -15,7 +15,7 @@ net stop RabbitMQ
 - navigate to RabbitMQ installation folder. Default is C:\Program Files\RabbitMQ Server\rabbitmq_server-{x.y.z}
 - navigate to plugins folder inside the RabbitMQ folder
 - unzip the content of the downloaded rabbitmq_tracing_ui.zip to rabbitmq_tracing_ui folder
-- navigate to back to the RabbitMQ folder and then navigate to the 'sbin' folder
+- navigate back to the RabbitMQ folder and then navigate to the 'sbin' folder
 - open cmd for that folder with administrator privileges and run:
 
 ```console

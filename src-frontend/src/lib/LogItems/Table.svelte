@@ -62,7 +62,7 @@
 			{#each logItems as logItem, i}
 				<tr class={i % 2 === 0 ? 'alt2' : 'alt1'}>
 					{#each columns as column (column.index)}
-						<td>{getLogItemValue(logItem, column)}</td>
+						<td>{@html getLogItemValue(logItem, column)}</td>
 					{/each}
 				</tr>
 			{/each}

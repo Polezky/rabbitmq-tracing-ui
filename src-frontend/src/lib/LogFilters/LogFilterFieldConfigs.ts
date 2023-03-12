@@ -13,7 +13,12 @@ export const logFilterFieldConfigs: Readonly<ILogFilterFieldConfig>[] = [
   Object.freeze({ type: LogFilterFieldType.Text, displayName: 'Connection', logItemKey: 'connection' }),
   Object.freeze({ type: LogFilterFieldType.Text, displayName: 'Exchange', logItemKey: 'exchange' }),
   Object.freeze({ type: LogFilterFieldType.Text, displayName: 'Node', logItemKey: 'node' }),
-  Object.freeze({ type: LogFilterFieldType.Text, displayName: 'Payload', logItemKey: 'payload' }),
+  Object.freeze({
+    type: LogFilterFieldType.Text,
+    displayName: 'Payload',
+    logItemKey: 'payload',
+    getDisplayValue: (logItem: LogItem) => surroundWithPreTag(logItem.payload),
+  }),
   Object.freeze({ type: LogFilterFieldType.Text, displayName: 'Queue', logItemKey: 'queue' }),
   Object.freeze({ type: LogFilterFieldType.TextArray, displayName: 'Routed Queues', logItemKey: 'routed_queues' }),
   Object.freeze({ type: LogFilterFieldType.TextArray, displayName: 'Routing Keys', logItemKey: 'routing_keys' }),
@@ -28,4 +33,8 @@ function getFormattedDateTime(date: Date): string {
   const dateStr = date.toLocaleDateString();
   const timeStr = date.toLocaleTimeString();
   return `${dateStr} ${timeStr}`;
+}
+
+function surroundWithPreTag(str: string): string {
+  return `<pre>${str}</pre>`;
 }

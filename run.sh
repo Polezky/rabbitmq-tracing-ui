@@ -14,7 +14,7 @@ function run() {
     return
   fi
 
-  if [[ $action == *"front"* ]]; then
+  if [[ $action == "front" ]]; then
     buildFrontend "$password"
   fi
 

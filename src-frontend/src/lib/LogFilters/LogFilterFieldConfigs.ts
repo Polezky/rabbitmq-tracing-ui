@@ -1,4 +1,6 @@
+import type { IColumnsConfig } from "$lib/LogItems/IColumnConfig";
 import type { LogItem } from "$lib/LogItems/LogItem";
+import { format } from "date-fns";
 import type { ILogFilterFieldConfig } from "./ILogFilterFieldConfig";
 import { LogFilterFieldType } from "./LogFilterFieldType";
 
@@ -7,7 +9,7 @@ export const logFilterFieldConfigs: Readonly<ILogFilterFieldConfig>[] = [
     type: LogFilterFieldType.DateTime,
     displayName: 'Date & Time',
     logItemKey: 'timestamp',
-    getDisplayValue: (logItem: LogItem) => getFormattedDateTime(logItem.timestamp),
+    getDisplayValue: (logItem: LogItem, config: IColumnsConfig) => format(logItem.timestamp, config.dateTimeFormat),
   }),
   Object.freeze({ type: LogFilterFieldType.Number, displayName: 'Channel', logItemKey: 'channel' }),
   Object.freeze({ type: LogFilterFieldType.Text, displayName: 'Connection', logItemKey: 'connection' }),
@@ -17,7 +19,7 @@ export const logFilterFieldConfigs: Readonly<ILogFilterFieldConfig>[] = [
     type: LogFilterFieldType.Text,
     displayName: 'Payload',
     logItemKey: 'payload',
-    getDisplayValue: (logItem: LogItem) => surroundWithPreTag(logItem.payload),
+    getDisplayValue: getPayloadDisplayValue,
   }),
   Object.freeze({ type: LogFilterFieldType.Text, displayName: 'Queue', logItemKey: 'queue' }),
   Object.freeze({ type: LogFilterFieldType.TextArray, displayName: 'Routed Queues', logItemKey: 'routed_queues' }),
@@ -29,12 +31,9 @@ export const logFilterFieldConfigs: Readonly<ILogFilterFieldConfig>[] = [
 ];
 
 
-function getFormattedDateTime(date: Date): string {
-  const dateStr = date.toLocaleDateString();
-  const timeStr = date.toLocaleTimeString();
-  return `${dateStr} ${timeStr}`;
-}
-
-function surroundWithPreTag(str: string): string {
-  return `<pre>${str}</pre>`;
+function getPayloadDisplayValue(logItem: LogItem, config: IColumnsConfig): string {
+  if (config.shouldFormatPayload) {
+    return `<pre class="ellipsis">${logItem.formattedPayload}</pre>`
+  }
+  return logItem.payload;
 }

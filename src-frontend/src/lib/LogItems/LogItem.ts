@@ -4,6 +4,7 @@ export class LogItem {
   exchange: string;
   node: string;
   payload: string;
+  formattedPayload: string;
   properties: {
     delivery_mode: number;
   };
@@ -25,7 +26,8 @@ export class LogItem {
     const logItem = new LogItem(JSON.parse(json));
     logItem.timestamp = new Date(logItem.timestamp);
     logItem.delivery_mode = logItem.properties.delivery_mode;
-    logItem.payload = tryFormatJson(decodeBase64(logItem.payload));
+    logItem.payload = decodeBase64(logItem.payload);
+    logItem.formattedPayload = tryFormatJson(logItem.payload);
     return logItem;
   }
 }

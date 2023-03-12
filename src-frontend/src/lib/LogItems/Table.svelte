@@ -1,13 +1,21 @@
 <script lang="ts">
-	import type { IColumnConfig } from './IColumnConfig';
+	import type { IColumnConfig, IColumnsConfig } from './IColumnConfig';
 	import type { LogItem } from './LogItem';
-	import { logItemColumnConfig, LogItemColumnList } from './ColumnList';
+	import {
+		canMoveColumnLeft,
+		canMoveColumnRight,
+		getVisibleColumns,
+		logItemColumnConfig,
+		moveColumnLeft,
+		moveColumnRight
+	} from './ColumnsConfig';
 	import { logFilterFieldConfigs } from '$lib/LogFilters/LogFilterFieldConfigs';
 	import type { LogItemFieldFormatter } from '$lib/LogFilters/ILogFilterFieldConfig';
 
 	export let logItems: LogItem[] = [];
+	export let rootElement: HTMLDivElement;
 
-	const columnList = LogItemColumnList.instance;
+	let thStyle: string;
 
 	const formatters = new Map<keyof LogItem, LogItemFieldFormatter>(
 		logFilterFieldConfigs
@@ -15,17 +23,21 @@
 			.map((x) => [x.logItemKey, x.getDisplayValue as LogItemFieldFormatter])
 	);
 
-	let columns: IColumnConfig[];
-	let isEditMode = false;
+	let visibleColumns: IColumnConfig[];
+	let config: IColumnsConfig;
 
-	logItemColumnConfig.subscribe(({ isEditMode: isEdit }) => {
-		columns = columnList.getVisibleColumns();
-		isEditMode = isEdit;
+	$: if (rootElement) {
+		thStyle = `top: ${rootElement.getBoundingClientRect().top.toFixed()}px;`;
+	}
+
+	logItemColumnConfig.subscribe((c) => {
+		config = c;
+		visibleColumns = getVisibleColumns();
 	});
 
 	function getLogItemValue(logItem: LogItem, column: IColumnConfig): string {
 		if (formatters.has(column.logItemKey)) {
-			return formatters.get(column.logItemKey)!(logItem);
+			return formatters.get(column.logItemKey)!(logItem, config);
 		}
 		return `${logItem[column.logItemKey]}`;
 	}
@@ -35,20 +47,20 @@
 	<table class="list">
 		<thead>
 			<tr>
-				{#each columns as column (column.index)}
-					<th class="c">
-						{#if isEditMode}
+				{#each visibleColumns as column (column.index)}
+					<th class="c" style={thStyle}>
+						{#if config.isEditMode}
 							<div class="config-container">
 								<div
 									class="move-arrow"
-									class:disabled={!columnList.canMoveColumnLeft(column)}
-									on:click={() => columnList.moveColumnLeft(column)}>
+									class:disabled={!canMoveColumnLeft(column)}
+									on:click={() => moveColumnLeft(column)}>
 									&larr
 								</div>
 								<div
 									class="move-arrow"
-									class:disabled={!columnList.canMoveColumnRight(column)}
-									on:click={() => columnList.moveColumnRight(column)}>
+									class:disabled={!canMoveColumnRight(column)}
+									on:click={() => moveColumnRight(column)}>
 									&rarr
 								</div>
 							</div>
@@ -61,7 +73,7 @@
 		<tbody>
 			{#each logItems as logItem, i}
 				<tr class={i % 2 === 0 ? 'alt2' : 'alt1'}>
-					{#each columns as column (column.index)}
+					{#each visibleColumns as column (column.index)}
 						<td>{@html getLogItemValue(logItem, column)}</td>
 					{/each}
 				</tr>
@@ -77,7 +89,6 @@
 
 		th {
 			position: sticky;
-			top: 115px;
 			background: white;
 			border-top: 1px solid rgb(204, 204, 204);
 		}

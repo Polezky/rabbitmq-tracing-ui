@@ -4,8 +4,8 @@
 	import { LogItem } from '$lib/LogItems/LogItem';
 	import LogFilterComponent from '$lib/LogFilters/LogFilter.svelte';
 	import type { LogFilterField } from '$lib/LogFilters/LogFilterField';
-	import LogItemColumnsConfig from '$lib/LogItems/ColumnsVisibility.svelte';
-	import { logItemColumnConfig } from '$lib/LogItems/ColumnList';
+	import LogItemColumnsConfig from '$lib/LogItems/ColumnsConfig.svelte';
+	import { logItemColumnConfig } from '$lib/LogItems/ColumnsConfig';
 
 	interface IFileInfo {
 		name: string;
@@ -14,6 +14,7 @@
 
 	const baseTraceFilesUrl = 'api/trace-files';
 
+	let rootElement: HTMLDivElement;
 	let files: IFileInfo[] = [];
 	let file: IFileInfo | undefined;
 	let allLogItems: LogItem[] = [];
@@ -27,6 +28,8 @@
 
 	onMount(async () => {
 		files = await loadLogFileLists();
+		file = files.find((f) => f.name === 'json0941.log');
+		loadLogs();
 	});
 
 	logItemColumnConfig.subscribe(({ isEditMode }) => {
@@ -72,7 +75,7 @@
 	}
 </script>
 
-<div class="tracing-ui-root">
+<div class="tracing-ui-root" bind:this={rootElement}>
 	<div class="controls">
 		<label for="fileName">File:</label>
 		<select bind:value={file} id="fileName">
@@ -116,7 +119,7 @@
 			<LogItemColumnsConfig />
 		</div>
 	{/if}
-	<LogItemTable {logItems} />
+	<LogItemTable {logItems} {rootElement} />
 </div>
 
 <style lang="scss">

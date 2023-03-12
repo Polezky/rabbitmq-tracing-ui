@@ -1,7 +1,8 @@
+import type { IColumnsConfig } from "$lib/LogItems/IColumnConfig";
 import type { LogItem } from "../LogItems/LogItem";
 import type { LogFilterFieldType } from "./LogFilterFieldType";
 
-export type LogItemFieldFormatter = (logItem: LogItem) => string;
+export type LogItemFieldFormatter = (logItem: LogItem, config: IColumnsConfig) => string;
 
 export interface ILogFilterFieldConfig {
   type: LogFilterFieldType;

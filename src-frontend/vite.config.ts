@@ -15,6 +15,6 @@ const postBuildCommandsPlugin: PluginOption = {
 export default defineConfig({
   plugins: [
     sveltekit(),
-    postBuildCommandsPlugin,
+    // postBuildCommandsPlugin,
   ]
 });

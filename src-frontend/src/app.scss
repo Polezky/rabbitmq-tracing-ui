@@ -1,14 +1,14 @@
-.d-flex {
-	display: flex;
-	flex-wrap: wrap;
-}
-
-.align-items-center {
-	align-items: center;
-}
-
 .tracing-ui-root {
 	$btnSecondaryColor: rgb(204, 204, 204);
+
+	.d-flex {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.align-items-center {
+		align-items: center;
+	}
 
 	.btn-secondary {
 		color: black !important;
@@ -17,5 +17,10 @@
 		&:hover {
 			background: #f60;
 		}
+	}
+
+	.ellipsis {
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 }

@@ -27,7 +27,8 @@
 	let config: IColumnsConfig;
 
 	$: if (rootElement) {
-		thStyle = `top: ${rootElement.getBoundingClientRect().top.toFixed()}px;`;
+		const top = rootElement.getBoundingClientRect().top - 5;
+		thStyle = `top: ${top.toFixed()}px;`;
 	}
 
 	logItemColumnConfig.subscribe((c) => {

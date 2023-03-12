@@ -46,7 +46,6 @@ const fieldTypeOperations = new Map<LogFilterFieldType, Map<LogFilterOperator, I
 
 export class LogFilterField {
   readonly id;
-  targetValue: LogFilterOperationType;
   config: ILogFilterFieldConfig;
   operatorsMap: Map<LogFilterOperator, ILogFilterOperation<LogFilterOperationType>>;
   operators: LogFilterOperator[];
@@ -56,60 +55,58 @@ export class LogFilterField {
     this.id = id || getId();
   }
 
-  get targetDate(): string {
-    const date = this.targetValue as Date;
-    const offset = date.getTimezoneOffset();
-    const localDateAsUtc = new Date(date.getTime() - (offset * 60 * 1000));
-    return localDateAsUtc.toISOString().split('T')[0];
-  }
+  targetText: string;
+  targetNumber: number;
+  targetDateTime: string;
 
-  set targetDate(dateTime: string) {
-    const time = this.targetTime;
-    this.targetValue = new Date(dateTime);
-    this.targetTime = time;
-  }
-
-  get targetTime(): string {
-    const date = this.targetValue as Date;
-    const offset = date.getTimezoneOffset();
-    const utcDate = new Date(date.getTime() - (offset * 60 * 1000));
-    return utcDate.toISOString().split('T')[1].split('.')[0];
-  }
-
-  set targetTime(value: string) {
-    const [hours, minutes] = value.split(':').map(x => parseInt(x));
-    (this.targetValue as Date).setHours(hours, minutes, 0, 0);
-  }
-
-  configure(config: ILogFilterFieldConfig, targetValue?: string, operator?: LogFilterOperator) {
+  configure(config: ILogFilterFieldConfig) {
     this.config = config;
     this.operatorsMap = fieldTypeOperations.get(this.config.type)!;
     this.operators = Array.from(this.operatorsMap.keys());
-    this.operator = operator || this.operators[0];
+    this.operator = this.operators[0];
 
-    if (this.config.type === LogFilterFieldType.DateTime) {
-      this.targetValue = targetValue ? new Date(targetValue) : new Date();
-    } else if (this.config.type === LogFilterFieldType.Number) {
-      this.targetValue = targetValue ? parseFloat(targetValue) : 0;
-    } else if (this.config.type === LogFilterFieldType.Text
-      || this.config.type === LogFilterFieldType.TextArray) {
-      this.targetValue = targetValue || '';
-    } else {
-      throw new Error(`Not implemented type ${this.config.type}`);
-    }
+    this.targetText = '';
+    this.targetNumber = 0;
+
+    const offset = new Date().getTimezoneOffset();
+    const localDateAsUtc = new Date(new Date().getTime() - (offset * 60 * 1000));
+    this.targetDateTime = localDateAsUtc
+      .toISOString()
+      .split(':')
+      .slice(0, -1)
+      .join(':');
   }
 
   filter(logItem: LogItem): boolean {
     const value = logItem[this.config.logItemKey] as LogFilterOperationType;
     const operation = this.operatorsMap.get(this.operator)!;
-    return operation(value, this.targetValue);
+
+    let targetValue: LogFilterOperationType;
+    if (this.config.type === LogFilterFieldType.DateTime) {
+      targetValue = new Date(this.targetDateTime);
+    } else if (this.config.type === LogFilterFieldType.Number) {
+      targetValue = this.targetNumber;
+    } else if (this.config.type === LogFilterFieldType.Text
+      || this.config.type === LogFilterFieldType.TextArray) {
+      targetValue = this.targetText;
+    } else {
+      throw new Error(`Not implemented type ${this.config.type}`);
+    }
+
+    return operation(value, targetValue);
   }
 
   static fromObjects(objects: LogFilterField[]): LogFilterField[] {
     return objects.map(object => {
       const field = new LogFilterField(object.id);
       const config = logFilterFieldConfigs.find(c => c.logItemKey === object.config.logItemKey);
-      field.configure(config!, object.targetValue as string, object.operator);
+      field.configure(config!);
+
+      field.operator = object.operator || field.operators[0];
+      field.targetText = object.targetText;
+      field.targetNumber = object.targetNumber;
+      field.targetDateTime = object.targetDateTime;
+
       return field;
     });
   }

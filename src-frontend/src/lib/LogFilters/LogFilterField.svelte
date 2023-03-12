@@ -44,14 +44,13 @@
 		{/each}
 	</select>
 	{#if field.config.type === LogFilterFieldType.Text}
-		<input bind:value={field.targetValue} type="text" />
+		<input bind:value={field.targetText} type="text" />
 	{:else if field.config.type === LogFilterFieldType.TextArray}
-		<input bind:value={field.targetValue} type="text" />
+		<input bind:value={field.targetText} type="text" />
 	{:else if field.config.type === LogFilterFieldType.Number}
-		<input bind:value={field.targetValue} type="number" />
+		<input bind:value={field.targetNumber} type="number" />
 	{:else if field.config.type === LogFilterFieldType.DateTime}
-		<input bind:value={field.targetDate} type="date" />
-		<input bind:value={field.targetTime} type="time" />
+		<input bind:value={field.targetDateTime} type="datetime-local" />
 	{/if}
 </div>
 
@@ -88,19 +87,14 @@
 			padding: 0.31em;
 		}
 
-		&[type='time'] {
-			width: 72px;
-			padding: 0.15em;
-		}
-
-		&[type='date'] {
-			width: 124px;
+		&[type='datetime-local'] {
+			width: 145px;
 			padding: 0.22em;
 		}
 
 		&[type='text'],
 		&[type='number'] {
-			width: 200px;
+			width: 145px;
 		}
 	}
 

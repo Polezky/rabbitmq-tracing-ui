@@ -23,10 +23,12 @@ export class DateTimeFormatItem {
 }
 
 export const dateTimeFormatItems = [
-  new DateTimeFormatItem('MMM dd H:mm:ss.SSS'),
-  new DateTimeFormatItem('MMM d H:mm:ss'),
-  new DateTimeFormatItem('MM/dd/yyyy H:mm:ss.SSS'),
-  new DateTimeFormatItem('MM/dd/yyyy H:mm:ss'),
-  new DateTimeFormatItem('dd-MM-yyyy H:mm:ss.SSS'),
-  new DateTimeFormatItem('dd-MM-yyyy H:mm:ss'),
+  new DateTimeFormatItem('MMM dd HH:mm:ss.SSS'),
+  new DateTimeFormatItem('MMM d HH:mm:ss'),
+  new DateTimeFormatItem('MM/dd/yyyy HH:mm:ss.SSS'),
+  new DateTimeFormatItem('MM/dd/yyyy HH:mm:ss'),
+  new DateTimeFormatItem('dd-MM-yyyy HH:mm:ss.SSS'),
+  new DateTimeFormatItem('dd-MM-yyyy HH:mm:ss'),
+  new DateTimeFormatItem('HH:mm:ss.SSS'),
+  new DateTimeFormatItem('HH:mm:ss'),
 ]

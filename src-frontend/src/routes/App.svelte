@@ -6,6 +6,7 @@
 	import type { LogFilterField } from '$lib/LogFilters/LogFilterField';
 	import LogItemColumnsConfig from '$lib/LogItems/ColumnsConfig.svelte';
 	import { logItemColumnConfig } from '$lib/LogItems/ColumnsConfig';
+	import { dev } from '$app/environment';
 
 	interface IFileInfo {
 		name: string;
@@ -28,8 +29,10 @@
 
 	onMount(async () => {
 		files = await loadLogFileLists();
-		// file = files.find((f) => f.name === 'json0941.log');
-		// loadLogs();
+		if (dev) {
+			file = files.find((f) => f.name === 'json0941.log');
+			loadLogs();
+		}
 	});
 
 	logItemColumnConfig.subscribe(({ isEditMode }) => {

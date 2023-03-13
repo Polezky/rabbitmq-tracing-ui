@@ -17,6 +17,10 @@ export function toggleShouldFormatPayload(): void {
   logItemColumnConfig.update(c => ({ ...c, shouldFormatPayload: !c.shouldFormatPayload }));
 }
 
+export function toggleCanAdjustColumnWidths(): void {
+  logItemColumnConfig.update(c => ({ ...c, canAdjustColumnWidths: !c.canAdjustColumnWidths }));
+}
+
 export function toggleColumnVisibility(column: IColumnConfig): void {
   column.isVisible = !column.isVisible;
   updateState({ columns: getSortedColumns(columns) });
@@ -44,6 +48,10 @@ export function getVisibleColumns(): IColumnConfig[] {
   return columns.filter(c => c.isVisible);
 }
 
+export function updateState(config: Partial<IColumnsConfig>): void {
+  logItemColumnConfig.update(c => ({ ...c, ...config }));
+}
+
 logItemColumnConfig.subscribe(c => {
   columns = c.columns;
   saveConfig(c);
@@ -63,7 +71,8 @@ function getOrCreateConfig(): IColumnsConfig {
       displayName,
       logItemKey,
       isVisible: true,
-      index
+      index,
+      width: 0
     }));
 
   return {
@@ -71,6 +80,7 @@ function getOrCreateConfig(): IColumnsConfig {
     columns: getSortedColumns(defaultColumns),
     dateTimeFormat: dateTimeFormatItems[0].format,
     shouldFormatPayload: false,
+    canAdjustColumnWidths: false,
   };
 }
 
@@ -95,10 +105,6 @@ function moveColumn(column: IColumnConfig, toRight: boolean): void {
   column.index = otherColumn.index;
   otherColumn.index = columnIndex;
   updateState({ columns: getSortedColumns(columns) });
-}
-
-function updateState(config: Partial<IColumnsConfig>): void {
-  logItemColumnConfig.update(c => ({ ...c, ...config }));
 }
 
 function getSortedColumns(columns: IColumnConfig[]): IColumnConfig[] {

@@ -29,7 +29,7 @@
 	onMount(async () => {
 		files = await loadLogFileLists();
 		// file = files.find((f) => f.name === 'json0941.log');
-		loadLogs();
+		// loadLogs();
 	});
 
 	logItemColumnConfig.subscribe(({ isEditMode }) => {

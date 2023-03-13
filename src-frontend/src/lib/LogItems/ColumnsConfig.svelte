@@ -2,6 +2,7 @@
 	import type { IColumnsConfig } from './IColumnConfig';
 	import {
 		logItemColumnConfig,
+		toggleCanAdjustColumnWidths,
 		toggleColumnVisibility,
 		toggleShouldFormatPayload,
 		updateDateTimeFormat
@@ -29,7 +30,23 @@
 		{/each}
 	</div>
 	<div class="items-container">
-		<strong>Columns Formatting:</strong>
+		<strong>Layout and Formatting:</strong>
+		<label class="lbl-checkbox lbl-formatting">
+			<input
+				type="checkbox"
+				class="checkbox"
+				on:change={() => toggleCanAdjustColumnWidths()}
+				bind:checked={config.canAdjustColumnWidths} />
+			Adjust column widths
+		</label>
+		<label class="lbl-checkbox lbl-formatting">
+			<input
+				type="checkbox"
+				class="checkbox"
+				on:change={() => toggleShouldFormatPayload()}
+				bind:checked={config.shouldFormatPayload} />
+			Format Payload
+		</label>
 		<label for="dateTimeFormat" class="lbl-formatting">Date & Time Format</label>
 		<select
 			id="dateTimeFormat"
@@ -41,14 +58,6 @@
 				</option>
 			{/each}
 		</select>
-		<label class="lbl-checkbox lbl-formatting">
-			<input
-				type="checkbox"
-				class="checkbox"
-				on:change={() => toggleShouldFormatPayload()}
-				bind:checked={config.shouldFormatPayload} />
-			Format Payload
-		</label>
 	</div>
 </div>
 

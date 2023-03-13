@@ -5,6 +5,7 @@ export interface IColumnsConfig {
   columns: IColumnConfig[];
   dateTimeFormat: string;
   shouldFormatPayload: boolean;
+  canAdjustColumnWidths: boolean;
 }
 
 export interface IColumnConfig {
@@ -12,4 +13,5 @@ export interface IColumnConfig {
   logItemKey: keyof LogItem;
   isVisible: boolean;
   index: number;
+  width: number;
 }

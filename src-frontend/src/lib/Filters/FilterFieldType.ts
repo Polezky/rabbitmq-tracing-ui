@@ -1,5 +1,4 @@
-
-export enum LogFilterFieldType {
+export enum FilterFieldType {
   Text,
   TextArray,
   Number,

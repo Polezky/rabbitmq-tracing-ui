@@ -1,11 +1,11 @@
 <script lang="ts">
-	import LogItemTable from '$lib/LogItems/Table.svelte';
+	import LogItemTable from '$lib/Table.svelte';
 	import { onMount } from 'svelte';
-	import { LogItem } from '$lib/LogItems/LogItem';
-	import LogFilterComponent from '$lib/LogFilters/LogFilter.svelte';
-	import type { LogFilterField } from '$lib/LogFilters/LogFilterField';
-	import LogItemColumnsConfig from '$lib/LogItems/ColumnsConfig.svelte';
-	import { logItemColumnConfig } from '$lib/LogItems/ColumnsConfig';
+	import { LogItem } from '$lib/LogItem';
+	import LogFilterComponent from '$lib/Filters/Filter.svelte';
+	import type { FilterField } from '$lib/Filters/FilterField';
+	import LogItemColumnsConfig from '$lib/Layout/LayoutConfig.svelte';
+	import { layoutConfig } from '$lib/Layout/LayoutConfig';
 	import { dev } from '$app/environment';
 
 	interface IFileInfo {
@@ -22,7 +22,7 @@
 	let logItems: LogItem[] = [];
 	let isFilterApplied = false;
 	let isFilterEditMode = false;
-	let isColumnEditMode = false;
+	let isLayoutEditMode = false;
 	let errorMessage = '';
 
 	$: hasAllLogItems = allLogItems.length > 0;
@@ -35,8 +35,8 @@
 		}
 	});
 
-	logItemColumnConfig.subscribe(({ isEditMode }) => {
-		isColumnEditMode = isEditMode;
+	layoutConfig.subscribe(({ isEditMode }) => {
+		isLayoutEditMode = isEditMode;
 	});
 
 	async function loadLogs(): Promise<void> {
@@ -50,7 +50,7 @@
 		} catch (error) {
 			file = undefined;
 			isFilterEditMode = false;
-			isColumnEditMode = false;
+			isLayoutEditMode = false;
 			errorMessage =
 				'Failed to parse JSON in log file. It could be a text log file. Pick a JSON log file.';
 		}
@@ -63,7 +63,7 @@
 		return JSON.parse(json);
 	}
 
-	function applyFilter({ detail: fields }: CustomEvent<LogFilterField[]>): void {
+	function applyFilter({ detail: fields }: CustomEvent<FilterField[]>): void {
 		isFilterApplied = true;
 		logItems = allLogItems.filter((i) => fields.every((f) => f.filter(i)));
 	}
@@ -74,7 +74,7 @@
 	}
 
 	function toggleColumnEditMode(): any {
-		logItemColumnConfig.update((c) => ({ ...c, isEditMode: !c.isEditMode }));
+		layoutConfig.update((c) => ({ ...c, isEditMode: !c.isEditMode }));
 	}
 </script>
 
@@ -97,11 +97,8 @@
 				class="btn-secondary">
 				{isFilterEditMode ? 'Hide' : 'Show'} Filter
 			</button>
-		{/if}
-
-		{#if hasAllLogItems}
 			<button type="button" on:click={toggleColumnEditMode} class="btn-secondary">
-				{isColumnEditMode ? 'Hide' : 'Show'} Columns Config
+				{isLayoutEditMode ? 'Hide' : 'Show'} Layout Config
 			</button>
 		{/if}
 	</div>
@@ -117,7 +114,7 @@
 				on:resetFilter={resetFilter} />
 		</div>
 	{/if}
-	{#if isColumnEditMode}
+	{#if isLayoutEditMode}
 		<div>
 			<LogItemColumnsConfig />
 		</div>

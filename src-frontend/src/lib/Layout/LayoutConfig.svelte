@@ -1,18 +1,18 @@
 <script lang="ts">
-	import type { IColumnsConfig } from './IColumnConfig';
+	import type { ILayoutConfig } from './ILayoutConfig';
 	import {
-		logItemColumnConfig,
+		layoutConfig,
 		toggleCanAdjustColumnWidths,
 		toggleColumnVisibility,
 		toggleShouldFormatPayload,
 		updateDateTimeFormat
-	} from './ColumnsConfig';
+	} from './LayoutConfig';
 	import { dateTimeFormatItems } from './DateTimeFormatItem';
 	const dateTimeFormats = dateTimeFormatItems;
 
-	let config: IColumnsConfig;
+	let config: ILayoutConfig;
 
-	logItemColumnConfig.subscribe((c) => (config = c));
+	layoutConfig.subscribe((c) => (config = c));
 </script>
 
 <div class="container">

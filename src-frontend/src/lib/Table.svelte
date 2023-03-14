@@ -1,17 +1,18 @@
 <script lang="ts">
-	import type { IColumnConfig, IColumnsConfig } from './IColumnConfig';
+	import type { IColumnConfig } from './Layout/IColumnConfig';
 	import type { LogItem } from './LogItem';
 	import {
 		canMoveColumnLeft,
 		canMoveColumnRight,
 		getVisibleColumns,
-		logItemColumnConfig,
+		layoutConfig,
 		moveColumnLeft,
 		moveColumnRight,
 		updateState as updateColumnsConfigState
-	} from './ColumnsConfig';
-	import { logFilterFieldConfigs } from '$lib/LogFilters/LogFilterFieldConfigs';
-	import type { LogItemFieldFormatter } from '$lib/LogFilters/ILogFilterFieldConfig';
+	} from './Layout/LayoutConfig';
+	import { filterFieldConfigs } from '$lib/Filters/FilterFieldConfigs';
+	import type { FieldFormatter } from '$lib/Filters/IFilterFieldConfig';
+	import type { ILayoutConfig } from './Layout/ILayoutConfig';
 
 	interface IColumnResizeInfo {
 		initialX: number;
@@ -25,21 +26,21 @@
 	let thTopStyle: string;
 	let resizeInfo: IColumnResizeInfo | undefined;
 
-	const formatters = new Map<keyof LogItem, LogItemFieldFormatter>(
-		logFilterFieldConfigs
+	const formatters = new Map<keyof LogItem, FieldFormatter>(
+		filterFieldConfigs
 			.filter((x) => typeof x.getDisplayValue === 'function')
-			.map((x) => [x.logItemKey, x.getDisplayValue as LogItemFieldFormatter])
+			.map((x) => [x.logItemKey, x.getDisplayValue as FieldFormatter])
 	);
 
 	let visibleColumns: IColumnConfig[];
-	let config: IColumnsConfig;
+	let config: ILayoutConfig;
 
 	$: if (rootElement) {
 		const top = rootElement.getBoundingClientRect().top - 5;
 		thTopStyle = `top:${top.toFixed()}px;`;
 	}
 
-	logItemColumnConfig.subscribe((c) => {
+	layoutConfig.subscribe((c) => {
 		config = c;
 		visibleColumns = getVisibleColumns();
 	});
@@ -169,6 +170,12 @@
 			td {
 				line-break: anywhere;
 			}
+
+			.move-arrow {
+				&.right {
+					margin-right: 5px;
+				}
+			}
 		}
 	}
 
@@ -180,10 +187,6 @@
 
 	.move-arrow {
 		cursor: pointer;
-
-		&.right {
-			margin-right: 5px;
-		}
 
 		&.disabled {
 			visibility: hidden;

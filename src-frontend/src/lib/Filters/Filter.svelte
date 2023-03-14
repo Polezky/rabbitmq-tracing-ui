@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { LogFilterField } from './LogFilterField';
-	import LogFilterFieldComponent from './LogFilterField.svelte';
-	import { logFilterFieldConfigs } from './LogFilterFieldConfigs';
+	import { FilterField } from './FilterField';
+	import LogFilterFieldComponent from './FilterField.svelte';
+	import { filterFieldConfigs } from './FilterFieldConfigs';
 
 	const dispatch = createEventDispatcher();
 	const localStorageKey = 'logFilter';
@@ -10,7 +10,7 @@
 	export let canApplyFilter = false;
 	export let isFilterApplied = false;
 
-	let fields: LogFilterField[] = [];
+	let fields: FilterField[] = [];
 
 	onMount(() => {
 		loadFilter();
@@ -18,16 +18,15 @@
 
 	function addField(): void {
 		const nextFieldConfig =
-			logFilterFieldConfigs.find(
-				(x) => !fields.some((xx) => xx.config.logItemKey === x.logItemKey)
-			) || logFilterFieldConfigs[0];
-		const newField = new LogFilterField();
+			filterFieldConfigs.find((x) => !fields.some((xx) => xx.config.logItemKey === x.logItemKey)) ||
+			filterFieldConfigs[0];
+		const newField = new FilterField();
 		newField.configure(nextFieldConfig);
 		fields = [...fields, newField];
 		saveFilter();
 	}
 
-	function removeField({ detail: field }: CustomEvent<LogFilterField>): void {
+	function removeField({ detail: field }: CustomEvent<FilterField>): void {
 		fields = fields.filter((f) => f.id !== field.id);
 		saveFilter();
 	}
@@ -51,8 +50,8 @@
 		if (!json) {
 			return;
 		}
-		const fieldObjects = JSON.parse(json) as LogFilterField[];
-		fields = LogFilterField.fromObjects(fieldObjects);
+		const fieldObjects = JSON.parse(json) as FilterField[];
+		fields = FilterField.fromObjects(fieldObjects);
 	}
 </script>
 

@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
-	import type { ILogFilterFieldConfig } from './ILogFilterFieldConfig';
+	import type { IFilterFieldConfig } from './IFilterFieldConfig';
 
-	import type { LogFilterField } from './LogFilterField';
-	import { logFilterFieldConfigs } from './LogFilterFieldConfigs';
-	import { LogFilterFieldType } from './LogFilterFieldType';
-	import { logFilterOperatorsMap } from './LogFilterOperator';
+	import type { FilterField } from './FilterField';
+	import { filterFieldConfigs } from './FilterFieldConfigs';
+	import { FilterFieldType } from './FilterFieldType';
+	import { filterOperatorsMap } from './FilterOperator';
 
 	const dispatch = createEventDispatcher();
 
-	export let field: LogFilterField;
+	export let field: FilterField;
 
-	let fieldConfig: ILogFilterFieldConfig;
+	let fieldConfig: IFilterFieldConfig;
 
 	onMount(async () => {
 		fieldConfig = field.config;
@@ -30,7 +30,7 @@
 <div class="container">
 	<div class="btn-remove" on:click={remove}>x</div>
 	<select bind:value={fieldConfig} on:change={updateFieldConfig} class="field-display-name">
-		{#each logFilterFieldConfigs as config}
+		{#each filterFieldConfigs as config}
 			<option value={config}>
 				{config.displayName}
 			</option>
@@ -39,17 +39,17 @@
 	<select bind:value={field.operator}>
 		{#each field.operators as o}
 			<option value={o}>
-				{logFilterOperatorsMap.get(o)}
+				{filterOperatorsMap.get(o)}
 			</option>
 		{/each}
 	</select>
-	{#if field.config.type === LogFilterFieldType.Text}
+	{#if field.config.type === FilterFieldType.Text}
 		<input bind:value={field.targetText} type="text" />
-	{:else if field.config.type === LogFilterFieldType.TextArray}
+	{:else if field.config.type === FilterFieldType.TextArray}
 		<input bind:value={field.targetText} type="text" />
-	{:else if field.config.type === LogFilterFieldType.Number}
+	{:else if field.config.type === FilterFieldType.Number}
 		<input bind:value={field.targetNumber} type="number" />
-	{:else if field.config.type === LogFilterFieldType.DateTime}
+	{:else if field.config.type === FilterFieldType.DateTime}
 		<input bind:value={field.targetDateTime} type="datetime-local" />
 	{/if}
 </div>

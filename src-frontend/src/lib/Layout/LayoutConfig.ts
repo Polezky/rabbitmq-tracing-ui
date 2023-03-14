@@ -1,24 +1,25 @@
-import { logFilterFieldConfigs } from "$lib/LogFilters/LogFilterFieldConfigs";
-import type { IColumnConfig, IColumnsConfig } from "./IColumnConfig";
+import type { ILayoutConfig } from "./ILayoutConfig";
+import type { IColumnConfig } from "./IColumnConfig";
 import { writable } from 'svelte/store';
 import { dateTimeFormatItems } from "./DateTimeFormatItem";
+import { filterFieldConfigs } from "$lib/Filters/FilterFieldConfigs";
 
 const localStorageKey = 'logItemColumnsConfig';
 
 let columns: IColumnConfig[] = [];
 
-export const logItemColumnConfig = writable<IColumnsConfig>(getOrCreateConfig());
+export const layoutConfig = writable<ILayoutConfig>(getOrCreateConfig());
 
 export function updateDateTimeFormat(dateTimeFormat: string): void {
-  logItemColumnConfig.update(c => ({ ...c, dateTimeFormat }));
+  layoutConfig.update(c => ({ ...c, dateTimeFormat }));
 }
 
 export function toggleShouldFormatPayload(): void {
-  logItemColumnConfig.update(c => ({ ...c, shouldFormatPayload: !c.shouldFormatPayload }));
+  layoutConfig.update(c => ({ ...c, shouldFormatPayload: !c.shouldFormatPayload }));
 }
 
 export function toggleCanAdjustColumnWidths(): void {
-  logItemColumnConfig.update(c => ({ ...c, canAdjustColumnWidths: !c.canAdjustColumnWidths }));
+  layoutConfig.update(c => ({ ...c, canAdjustColumnWidths: !c.canAdjustColumnWidths }));
 }
 
 export function toggleColumnVisibility(column: IColumnConfig): void {
@@ -48,16 +49,16 @@ export function getVisibleColumns(): IColumnConfig[] {
   return columns.filter(c => c.isVisible);
 }
 
-export function updateState(config: Partial<IColumnsConfig>): void {
-  logItemColumnConfig.update(c => ({ ...c, ...config }));
+export function updateState(config: Partial<ILayoutConfig>): void {
+  layoutConfig.update(c => ({ ...c, ...config }));
 }
 
-logItemColumnConfig.subscribe(c => {
+layoutConfig.subscribe(c => {
   columns = c.columns;
   saveConfig(c);
 });
 
-function getOrCreateConfig(): IColumnsConfig {
+function getOrCreateConfig(): ILayoutConfig {
   const json = typeof localStorage !== 'undefined'
     ? localStorage.getItem(localStorageKey)
     : undefined;
@@ -66,7 +67,7 @@ function getOrCreateConfig(): IColumnsConfig {
     return JSON.parse(json);
   }
 
-  const defaultColumns = logFilterFieldConfigs
+  const defaultColumns = filterFieldConfigs
     .map<IColumnConfig>(({ displayName, logItemKey }, index) => ({
       displayName,
       logItemKey,
@@ -84,7 +85,7 @@ function getOrCreateConfig(): IColumnsConfig {
   };
 }
 
-function saveConfig(config: IColumnsConfig): void {
+function saveConfig(config: ILayoutConfig): void {
   if (typeof localStorage === 'undefined') {
     return;
   }

@@ -29,7 +29,7 @@ Traces are displayed in a table. Each trace field is displayed in the table colu
 
 ## How to use
 
-- Install the plugin. The instructions are below.
+- Install the plugin. The instructions are [here](#installation).
 - Open the management plugin url.The default for single node on localhost is http://localhost:15672
 - Click on the Admin tab.
 - If you have already traces then you can move to the next step. To use the 'Tracing UI' plugin you need to have at least on trace file in JSON format. To create a trace file use the 'Tracing' plugin which is included in the RabbitMQ delivery.

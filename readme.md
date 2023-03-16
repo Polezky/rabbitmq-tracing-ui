@@ -1,5 +1,13 @@
 # RabbitMQ plugin to view and filter traces
 
+## Table of Contents
+
+- [Motivation](#motivation)
+- [Features](#features)
+- [How to use](#how-to-use)
+- [Installation](#installation)
+- [Quick Demo](#quick-demo)
+
 ## Motivation
 
 Sometimes, during development or debugging, it's useful to be able to see every message that is published, and every message that is delivered. RabbitMQ has the [firehose](https://www.rabbitmq.com/firehose.html) feature and the [tracing plugin](https://blog.rabbitmq.com/posts/2011/09/rabbitmq-tracing-a-ui-for-the-firehose/) which allow to record and store traces in files. Often there are a lot published and delivered messages even for short period of time, so the developers need to filter those traces.

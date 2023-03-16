@@ -95,3 +95,7 @@ Windows
 net stop RabbitMQ
 net start RabbitMQ
 ```
+
+## Quick Demo
+
+![Demo gif](demo.gif)

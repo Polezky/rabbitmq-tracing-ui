@@ -34,7 +34,7 @@ Traces are displayed in a table. Each trace field is displayed in the table colu
 - Click on the Admin tab.
 - If you have already traces then you can move to the next step. To use the 'Tracing UI' plugin you need to have at least one trace file in JSON format. To create a trace file use the 'Tracing' plugin which is included in the RabbitMQ delivery.
 
-  - On the right side menu click on the 'Tracing' tab.
+  - Click on the 'Tracing' tab on the right side menu.
   - Expand the 'Add new trace' section
   - In this section type 'File Name', choose the 'JSON' format, and type the user name and the password. Optionally restrict 'Max payloads bytes' and Pattern.
   - Click on the 'Add trace' button.
@@ -43,15 +43,15 @@ Traces are displayed in a table. Each trace field is displayed in the table colu
   - You can read more on the [Tracing plugin blog ](https://blog.rabbitmq.com/posts/2011/09/rabbitmq-tracing-a-ui-for-the-firehose/)
   - Once you have some records in a tracing file you can use the 'Tracing UI' plugin to filter them.
 
-- On the right side menu click on the 'Tracing UI' tab.
+- Click on the 'Tracing UI' tab on the right side menu.
 - In the 'File' dropdown choose a file with traces in JSON format. Then click on the 'Load File' button.
 - To filter traces click on the 'Show Filter' button.
   - To add a filter condition click on the 'Add' button next to the 'Filter Conditions' section name.
-  - Select a field to filter by.
-  - Select an operator.
-  - Enter a value.
+  - Select a field to filter by. E.g. 'Date and Time'
+  - Select an operator. E.g. 'after'
+  - Enter a value. E.g. 5 minutes before current date and time.
   - To apply Click on the 'Apply' button.
-  - Click on the 'Apply' button.
+  - To reset Click on the 'Reset' button .
   - To close the 'Filter Conditions' section click on the 'Hide Filter' button.
 - To configure the table layout click on the 'Show Layout Config' button.
   - In the 'Columns Visibility' section you can check/uncheck columns to show/hide

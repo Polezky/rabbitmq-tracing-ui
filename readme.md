@@ -76,7 +76,7 @@ cd /usr/lib/rabbitmq/lib/rabbitmq_server-{x.y.z} # default path where {x.y.z} - 
 Windows
 
 ```shell
-cd C:\Program Files\RabbitMQ Server\rabbitmq_server-{x.y.z} # default path where {x.y.z} - is version
+cd "C:\Program Files\RabbitMQ Server\rabbitmq_server-{x.y.z}" # default path where {x.y.z} - is version
 ```
 
 - Navigate to the 'plugins' folder inside the RabbitMQ folder
